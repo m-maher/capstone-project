@@ -22,6 +22,38 @@ def db_drop_and_create_all():
     db.create_all()
     db_init_records()
 
+def db_init_records():
+    '''this will initialize the database with some test records.'''
+
+    new_actor = (Actor(
+        name = 'Tom',
+        gender = 'Male',
+        age = 25
+        ))
+
+    new_movie = (Movie(
+        title = 'Tom first Movie',
+        release_date = date.today()
+        ))
+
+    new_performance = Performance.insert().values(
+        Movie_id = new_movie.id,
+        Actor_id = new_actor.id,
+        actor_fee = 500.00
+    )
+
+    new_actor.insert()
+    new_movie.insert()
+    db.session.execute(new_performance) 
+    db.session.commit()
+
+Performance = db.Table('Performance', db.Model.metadata,
+                       db.Column('Movie_id', db.Integer,
+                                 db.ForeignKey('movies.id')),
+                       db.Column('Actor_id', db.Integer,
+                                 db.ForeignKey('actors.id')),
+                       db.Column('actor_fee', db.Float)
+                       )
 
 class Actor(db.Model):
     __tablename__ = "actors"
@@ -54,16 +86,6 @@ class Actor(db.Model):
             'gender': self.gender,
             'age': self.age
         }
-
-
-Performance = db.Table('Performance', db.Model.metadata,
-                       db.Column('Movie_id', db.Integer,
-                                 db.ForeignKey('movies.id')),
-                       db.Column('Actor_id', db.Integer,
-                                 db.ForeignKey('actors.id')),
-                       db.Column('actor_fee', db.Float)
-                       )
-
 
 class Movie(db.Model):
     __tablename__ = "movies"

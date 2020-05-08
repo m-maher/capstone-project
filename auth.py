@@ -21,7 +21,7 @@ class AuthError(Exception):
 
 def get_token_auth_header():
 
-    auth = request.headers.get('Authorization', None)
+    auth = request.headers['Authorization']
 
     if not auth:
         raise AuthError({
@@ -70,7 +70,7 @@ def check_permissions(permission, payload):
 
 
 def verify_decode_jwt(token):
-    jsonurl = urlopen("https://"+AUTH0_DOMAIN+"/.well-known/jwks.json")
+    jsonurl = urlopen("https://fsnd99.auth0.com/.well-known/jwks.json")
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
 
@@ -108,7 +108,7 @@ def verify_decode_jwt(token):
                 'description': 'Token expired'
             }, 401)
 
-        except jwt.JWTClaimError:
+        except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
                 'description':
