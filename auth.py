@@ -2,7 +2,10 @@ import json
 from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
-from urllib.request import urlopen
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 from config import auth0_config
 
 AUTH0_DOMAIN = auth0_config['AUTH0_DOMAIN']
@@ -26,6 +29,8 @@ def get_token_auth_header():
             'description': 'Authorization header is expected'
         }, 401)
 
+    parts = auth.split()
+
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
@@ -44,7 +49,8 @@ def get_token_auth_header():
             'description': 'Authorization header must be bearer token'
         }, 401)
 
-    return parts[1]
+    token = parts[1]
+    return token
 
 
 def check_permissions(permission, payload):
@@ -64,7 +70,8 @@ def check_permissions(permission, payload):
 
 
 def verify_decode_jwt(token):
-    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    # jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    jsonurl = urlopen("https://"+AUTH0_DOMAIN+"/.well-known/jwks.json")
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
 
@@ -92,7 +99,7 @@ def verify_decode_jwt(token):
                 rsa_key,
                 algorithms=ALGORITHMS,
                 audiencs=API_AUDIENCE,
-                issuer='https://' + AUTH0_DOMAIN + '/'
+                issuer="https://"+AUTH0_DOMAIN+"/"
             )
             return payload
 
@@ -113,7 +120,7 @@ def verify_decode_jwt(token):
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token'
-            }, 400)
+            }, 401)
 
     raise AuthError({
         'code': 'invalid_header',
