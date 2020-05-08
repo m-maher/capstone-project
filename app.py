@@ -17,17 +17,11 @@ def create_app(test_config=None):
 
     @app.after_request
     def after_request(response):
-        response.header.add('Access-Control-Allow-Headers',
+        response.headers.add('Access-Control-Allow-Headers',
                             'Content-Type,Authorization,true')
-        response.header.add('Access-Control-Allow-Methods',
+        response.headers.add('Access-Control-Allow-Methods',
                             'POST,GET,PATCH,DELETE,OPTIONS')
         return response
-
-    def get_error_message(error, default_text):
-        try:
-            return error.description['message']
-        except ImportError:
-            return default_text
 
     def paginate(request, selection):
         page = request.args.get('page', 1, type=int)
@@ -242,7 +236,7 @@ def create_app(test_config=None):
         return jsonify({
             'success': False,
             'error': 422,
-            'message': get_error_message(error, "unprocessable")
+            'message': "unprocessable"
         }), 422
 
     @app.errorhandler(400)
@@ -250,7 +244,7 @@ def create_app(test_config=None):
         return jsonify({
             'success': False,
             'error': 400,
-            'message': get_error_message(error, "bad_request")
+            'message': "bad_request"
         }), 400
 
     @app.errorhandler(404)
@@ -258,7 +252,7 @@ def create_app(test_config=None):
         return jsonify({
             'success': False,
             'error': 404,
-            'message': get_error_message(error, "resource not found")
+            'message': "resource not found"
         }), 404
 
     @app.errorhandler(AuthError)
