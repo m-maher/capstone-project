@@ -1,8 +1,12 @@
-import os
 from sqlalchemy import Column, String, Integer, Float, Date, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import date
+import os
+try:
+    os.environ['DATABASE_URL'] = "postgresql://postgres:postgres@localhost:5432/movies"
+except EnvironmentError:
+    sys.exit(1)
 
 db = SQLAlchemy()
 
