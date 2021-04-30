@@ -67,7 +67,7 @@ python-jose==3.1.0
 python-mimeparse==1.6.0
 pytz==2019.1
 pyxdg==0.25
-rsa==4.0
+rsa==4.7
 scandir==1.10.0
 SecretStorage==2.3.1
 singledispatch==3.4.0.3
