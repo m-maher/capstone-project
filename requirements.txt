@@ -42,7 +42,7 @@ mccabe==0.6.1
 more-itertools==5.0.0
 mysql-connector-python==8.0.15
 packaging==20.3
-paramiko==2.6.0
+paramiko==2.10.1
 pathlib2==2.3.5
 pep8==1.7.1
 pexpect==4.6.0
